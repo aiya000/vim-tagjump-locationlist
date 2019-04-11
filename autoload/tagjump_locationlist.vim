@@ -5,10 +5,16 @@ endfunction
 
 " Makes a location list to list up with a given regex
 function! tagjump_locationlist#search(regex) abort
-  call setloclist(winnr(), [])
+  let target_winnr = winnr()
+  call setloclist(target_winnr, [])
   lopen
 
   call map(taglist(a:regex), function('s:laddexpr_line'))
+  if empty(getloclist(target_winnr))
+    echo printf('no "%s" found', a:regex)
+    lclose
+    return
+  endif
 
   " NOTE: Why the cursor go to a previous window after open a new loclist?
   execute 'normal!' "\<C-w>p"
@@ -23,5 +29,11 @@ endfunction
 "   'filename': '/path/to/vim-tagjump-locationlist/README.md'
 " }
 function! s:laddexpr_line(_, term) abort
-  execute ':lvimgrep' a:term['cmd'] a:term['filename']
+  try
+    let cmd = escape(a:term['cmd'], '[')
+    let filename = fnameescape(a:term['filename'])
+    execute ':silent lvimgrep' cmd filename
+  catch /^Vim(lvimgrep):E480/
+    " Ignore an already unexistent tag
+  endtry
 endfunction
