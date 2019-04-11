@@ -11,3 +11,8 @@ nmap <Plug>(tagjump-locationlist) :<C-u>call tagjump_locationlist#cword()<CR>
 vmap <Plug>(tagjump-locationlist) "zy:<C-u>tagjump_locationlist#search(@z)<CR>
 
 command! -bar -nargs=+ TagjumpLocationlistSearch call tagjump_locationlist#search(<q-args>)
+
+if g:tagjump_locationlist_use_default_keymappings
+  nmap <C-]> <Plug>(tagjump-locationlist)
+  vmap <C-]> <Plug>(tagjump-locationlist)
+endif
