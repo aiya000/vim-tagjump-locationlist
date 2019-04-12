@@ -30,7 +30,7 @@ endfunction
 " }
 function! s:laddexpr_line(_, term) abort
   try
-    let cmd = escape(a:term['cmd'], '[')
+    let cmd = escape(a:term['cmd'], '[~')
     let filename = fnameescape(a:term['filename'])
     execute ':silent lvimgrep' cmd filename
   catch /^Vim(lvimgrep):E480/
